@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Stream URLs
-const ottStreamURL = "https://vip-honortv.netlify.app/f/t/vg.html";
+const ottStreamURL = "https://hntv.netlify.app/free-playlist";
 const altStreamURL = "https://pastebin.com/raw/YctRidwE";
 
 // Allowed OTT User-Agents
