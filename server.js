@@ -5,43 +5,34 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Stream URLs
-const ottStreamURL = "https://hntv.netlify.app/free-playlist";
+const ottStreamURL = "https://vip-honortv.netlify.app/f/t/vg.html";
 const altStreamURL = "https://pastebin.com/raw/YctRidwE";
 
 // Allowed OTT User-Agents
 const allowedAgents = [
-  "aganaman"
+  "OTT Navigator",
+  "OTT Player",
+  "OTT TV"
 ];
 
-// Allowed Referers (adjust as needed)
-const allowedReferers = [
-  "https://masports.dns.org"
-];
+// 🔒 Forced Referer (same as OTT URL)
+const FORCED_REFERER = "https://vip-honortv.netlify.app/f/t/vg.html";
 
 app.get("/", async (req, res) => {
   const userAgent = req.headers["user-agent"] || "";
-  const referer = req.headers["referer"] || "";
 
-  const isAllowedOTTApp = allowedAgents.some(a =>
-    userAgent.includes(a)
+  const isAllowedOTTApp = allowedAgents.some(agent =>
+    userAgent.includes(agent)
   );
-
-  const isAllowedReferer = allowedReferers.some(r =>
-    referer.startsWith(r)
-  );
-
-  // ❌ Block if referer is invalid
-  if (!isAllowedReferer) {
-    return res.status(403).send("Forbidden");
-  }
 
   const streamURL = isAllowedOTTApp ? ottStreamURL : altStreamURL;
 
   try {
     const response = await fetch(streamURL, {
       headers: {
-        "User-Agent": userAgent,
-        "Referer": referer,
+        "User-Agent": userAgent || "OTT Navigator",
+        "Referer": FORCED_REFERER,
+        "Origin": FORCED_REFERER,
         "Cache-Control": "no-cache"
       }
     });
